@@ -1,0 +1,92 @@
+
+body {
+    background-color: #f3f4f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.calc {
+    background-color: #222;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    width: 320px;
+}
+
+.maininput {
+    background-color: #333;
+    border: none;
+    height: 60px;
+    width: 100%;
+    font-size: 2rem;
+    color: #fff;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: right;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.btn {
+    padding: 20px;
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.numbtn {
+    background-color: #555;
+    color: #fff;
+}
+
+.numbtn:hover {
+    background-color: #666;
+}
+
+.calbtn {
+    background-color: #ff9500;
+    color: #fff;
+}
+
+.calbtn:hover {
+    background-color: #ffab40;
+}
+
+.c {
+    background-color: #d9534f;
+    color: #fff;
+}
+
+.c:hover {
+    background-color: #c9302c;
+}
+
+.equal {
+    background-color: #5cb85c;
+    color: #fff;
+}
+
+.equal:hover {
+    background-color: #4cae4c;
+}
+
+.cancel {
+    background-color: #f0ad4e;
+    color: #fff;
+}
+
+.cancel:hover {
+    background-color: #ec971f;
+}
