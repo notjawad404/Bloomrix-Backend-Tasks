@@ -2,30 +2,38 @@
 $num = "";
 $result = "";
 $expression = "";
+$resetInput = false;
 
 if (isset($_POST['num'])) {
-    $num = $_POST['input'] . $_POST['num']; 
+   
+    if (isset($_POST['resetInput']) && $_POST['resetInput'] == "true") {
+        $num = $_POST['num']; 
+        $resetInput = false;
+    } else {
+        $num = $_POST['input'] . $_POST['num'];
+    }
 }
-
 
 if (isset($_POST['op'])) {
     $num = $_POST['input'] . " " . $_POST['op'] . " ";
+    $resetInput = false;
 }
 
-// Check if the cancel button (C) was clicked
+
 if (isset($_POST['cancel'])) {
     $num = "";
+    $resetInput = false;
 }
 
-// Check if the equal button (=) was clicked
 if (isset($_POST['equal'])) {
     try {
-        // Use eval to evaluate the expression safely
         $expression = $_POST['input'];
-        $result = eval("return $expression;"); // Evaluate the input expression
-        $num = $result; // Display the result
+        $result = eval("return $expression;");
+        $num = $result;
+        $resetInput = true;
     } catch (Exception $e) {
-        $num = "Error"; // Show error if evaluation fails
+        $num = "Error";
+        $resetInput = false;
     }
 }
 ?>
@@ -42,7 +50,9 @@ if (isset($_POST['equal'])) {
 <body>
     <div class="calc">
         <form action="" method="post">
-            <!-- Display the input/result in the main input field -->
+            <!-- Hidden field to track if resetInput is true -->
+            <input type="hidden" name="resetInput" value="<?php echo $resetInput ? 'true' : 'false'; ?>">
+            
             <input type="text" class="maininput" name="input" value="<?php echo htmlspecialchars($num); ?>" readonly>
             <div class="button-grid">
                 <input type="submit" class="btn numbtn" name="num" value="7">
