@@ -3,28 +3,44 @@ session_start();
 
 $contacts = isset($_SESSION['contacts']) ? $_SESSION['contacts'] : [];
 
-// Add a contact
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_contact'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_contact'])) {
     $name = trim($_POST['name']);
     $email = trim($_POST['email']);
     $phone = trim($_POST['phone']);
+    $index = isset($_POST['index']) ? $_POST['index'] : null;
 
     if ($name && $email && $phone) {
-        $contacts[] = [
-            'name' => htmlspecialchars($name),
-            'email' => htmlspecialchars($email),
-            'phone' => htmlspecialchars($phone)
-        ];
+        if ($index !== null) {
+            $contacts[$index] = [
+                'name' => htmlspecialchars($name),
+                'email' => htmlspecialchars($email),
+                'phone' => htmlspecialchars($phone)
+            ];
+        } else {
+            $contacts[] = [
+                'name' => htmlspecialchars($name),
+                'email' => htmlspecialchars($email),
+                'phone' => htmlspecialchars($phone)
+            ];
+        }
         $_SESSION['contacts'] = $contacts;
     }
 }
 
-// Remove a contact
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_contact'])) {
     $index = $_POST['index'];
     if (isset($contacts[$index])) {
         unset($contacts[$index]);
         $_SESSION['contacts'] = array_values($contacts);
+    }
+}
+
+$editContact = ['name' => '', 'email' => '', 'phone' => ''];
+$editIndex = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_contact'])) {
+    $editIndex = $_POST['index'];
+    if (isset($contacts[$editIndex])) {
+        $editContact = $contacts[$editIndex];
     }
 }
 ?>
@@ -41,10 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_contact'])) {
         <h1>Contact Manager</h1>
 
         <form method="post">
-            <input type="text" name="name" placeholder="Name" required>
-            <input type="text" name="email" placeholder="Email" required>
-            <input type="text" name="phone" placeholder="Phone Number" required>
-            <button type="submit" name="add_contact">Add Contact</button>
+            <input type="hidden" name="index" value="<?php echo $editIndex !== null ? $editIndex : ''; ?>">
+            <input type="text" name="name" value="<?php echo $editContact['name']; ?>" placeholder="Name" required>
+            <input type="email" name="email" value="<?php echo $editContact['email']; ?>" placeholder="Email" required>
+            <input type="number" name="phone" value="<?php echo $editContact['phone']; ?>" placeholder="Phone Number" required>
+            <button type="submit" name="save_contact"><?php echo $editIndex !== null ? 'Update' : 'Add'; ?> Contact</button>
         </form>
 
         <table>
@@ -59,7 +76,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_contact'])) {
                     <td><?php echo $contact['name']; ?></td>
                     <td><?php echo $contact['email']; ?></td>
                     <td><?php echo $contact['phone']; ?></td>
-                    <td>
+                    <td class="actions">
+                        <form method="post" style="display:inline;">
+                            <input type="hidden" name="index" value="<?php echo $index; ?>">
+                            <button type="submit" name="edit_contact" class="edit-btn">Edit</button>
+                        </form>
+
                         <form method="post" style="display:inline;">
                             <input type="hidden" name="index" value="<?php echo $index; ?>">
                             <button type="submit" name="remove_contact" class="remove-btn">Remove</button>

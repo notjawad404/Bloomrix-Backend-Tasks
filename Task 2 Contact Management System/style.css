@@ -14,13 +14,17 @@ h1 {
 }
 form {
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
-input[type="text"] {
+input {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
     box-sizing: border-box;
 }
+
+
 button {
     padding: 10px;
     background-color: #4CAF50;
@@ -45,4 +49,19 @@ th, td {
 }
 .remove-btn {
     background-color: #f44336;
+}
+
+
+.actions{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.remove-btn{
+    background-color: #f44336;
+}
+
+.edit-btn{
+    background-color: #0f25b0;
 }
