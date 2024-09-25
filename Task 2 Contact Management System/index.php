@@ -51,12 +51,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_contact'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Manager</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        function confirmDelete() {
+            return confirm('Are you sure you want to delete this contact?');
+        }
+
+        function confirmUpdate() {
+            return confirm('Are you sure you want to update this contact?');
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Contact Manager</h1>
 
-        <form method="post">
+        <form method="post" onsubmit="return <?php echo $editIndex !== null ? 'confirmUpdate()' : 'true'; ?>;">
             <input type="hidden" name="index" value="<?php echo $editIndex !== null ? $editIndex : ''; ?>">
             <input type="text" name="name" value="<?php echo $editContact['name']; ?>" placeholder="Name" required>
             <input type="email" name="email" value="<?php echo $editContact['email']; ?>" placeholder="Email" required>
@@ -82,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_contact'])) {
                             <button type="submit" name="edit_contact" class="edit-btn">Edit</button>
                         </form>
 
-                        <form method="post" style="display:inline;">
+                        <form method="post" style="display:inline;" onsubmit="return confirmDelete();">
                             <input type="hidden" name="index" value="<?php echo $index; ?>">
                             <button type="submit" name="remove_contact" class="remove-btn">Remove</button>
                         </form>
