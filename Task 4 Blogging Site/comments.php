@@ -98,7 +98,7 @@ $comments_result = $conn->query($comments_query);
         </div>
         
         <div class="add-comment">
-            <a href="add_comment.php?post_id=<?php echo $post_id; ?>">
+            <a href="addComment.php?post_id=<?php echo $post_id; ?>">
                 <button>Add Comment</button>
             </a>
         </div>

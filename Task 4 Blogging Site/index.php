@@ -110,7 +110,7 @@ $result = $conn->query($query);
                         <a href="comments.php?post_id=<?php echo $row['id']?>">
                             <button><span>(<?php echo $row['comment_count']?>)</span> View Comments</button>
                         </a>
-                        <a href="add_comment.php?post_id=<?php echo $row['id'];?>" >
+                        <a href="addComment.php?post_id=<?php echo $row['id'];?>" >
                             <button>Add Comment</button>
                         </a>
                     </section>
