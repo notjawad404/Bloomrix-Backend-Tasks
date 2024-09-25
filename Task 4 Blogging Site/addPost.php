@@ -12,10 +12,17 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+session_start();
+if(!isset($_SESSION['bloguser'])){
+    header('location: login.php');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $title = $_POST['title'];
     $content = $_POST['content'];
-    $author = $_POST['author'];
+    // $author = $_POST['author'];
+    $author = $_SESSION['bloguser'];
 
     $stmt = $conn->prepare("INSERT INTO posts (title, content, author) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $title, $content, $author);
@@ -106,9 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
             <label for="content">Content:</label>
             <textarea id="content" name="content" rows="5" required></textarea>
-
-            <label for="author">Author:</label>
-            <input type="text" id="author" name="author" required>
 
             <input type="submit" value="Submit">
         </form>

@@ -12,10 +12,17 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+session_start();
+if(!isset($_SESSION['bloguser'])){
+    header('location: login.php');
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $post_id = $_POST['post_id'];
     $comment_text = $_POST['comment_text'];
-    $commenter = $_POST['commenter'];
+    // $commenter = $_POST['commenter'];
+    $commenter = $_SESSION['bloguser'];
 
     // Insert comment using prepared statement
     $stmt = $conn->prepare("INSERT INTO comments (post_id, comment_text, commenter) VALUES (?, ?, ?)");
@@ -107,9 +114,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <label for="commenter">Your Name:</label>
             <input type="text" id="commenter" name="commenter" required>
-
-            <label for="comment_text">Your Comment:</label>
-            <textarea id="comment_text" name="comment_text" rows="5" required></textarea>
 
             <input type="submit" value="Post Comment">
         </form>

@@ -12,6 +12,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+session_start();
+
 $query = "SELECT p.id, p.title, p.content, p.author, p.created_at,
             (SELECT COUNT(*) FROM comments c where c.post_id = p.id) AS comment_count
         FROM posts p
@@ -19,6 +21,14 @@ $query = "SELECT p.id, p.title, p.content, p.author, p.created_at,
         ";
 
 $result = $conn->query($query);
+
+
+if(isset($_POST['Logout'])){
+    session_unset();
+    session_destroy();
+    header('location: login.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -92,6 +102,9 @@ $result = $conn->query($query);
 
 <body>
     <div class="container">
+    <form action="" method="POST">
+        <input type="submit" value="Logout" name="Logout" class="logout">
+    </form>
         <h1>BlogVerse</h1>
         <div class="add-post">
             <a href="addPost.php"><button>Add new Post</button></a>
