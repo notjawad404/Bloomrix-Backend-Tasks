@@ -42,13 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             padding: 20px;
         }
         h2 {
-            color: blue;
+            color: #2980b9;
             text-align: center;
         }
         .container {
             max-width: 600px;
             margin: auto;
-            background: gray;
+            background: lightgray;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             justify-content: center;
             align-items: center;
             margin: auto;
-            background-color: blue;
+            background-color: #2980b9;
             color: white;
             border: none;
             padding: 10px 15px;
@@ -83,13 +83,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             width: 50%;
         }
         input[type="submit"]:hover {
-            background-color: lightblue;
+            background-color: #1a6699;
         }
 
         button{
             background-color: red;
             color: white;
             cursor: pointer;
+            padding: 5px;
         }
     </style>
 </head>

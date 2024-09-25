@@ -31,8 +31,8 @@ $result = $conn->query($query);
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: lightcyan;
+            color: black;
             margin: 0;
             padding: 20px;
         }
@@ -43,13 +43,14 @@ $result = $conn->query($query);
         .container {
             max-width: 800px;
             margin: auto;
-            background: #fff;
+            background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         .post {
             margin-bottom: 20px;
+            background-color: lightgrey;
             padding: 15px;
             border-bottom: 1px solid #eaeaea;
         }
