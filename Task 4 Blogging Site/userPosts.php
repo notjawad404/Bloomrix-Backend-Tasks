@@ -14,19 +14,49 @@ if ($conn->connect_error) {
 
 session_start();
 
+// Ensure the user is logged in
+if (!isset($_SESSION['bloguser'])) {
+    header('Location: login.php');
+    exit();
+}
+
+$bloguser = $_SESSION['bloguser']; // The logged-in user's username
+
+// Fetch posts only from the logged-in user
 $query = "SELECT p.id, p.title, p.content, p.author, p.created_at,
-            (SELECT COUNT(*) FROM comments c where c.post_id = p.id) AS comment_count
-        FROM posts p
-        ORDER BY p.created_at DESC
-        ";
+            (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
+          FROM posts p
+          WHERE p.author = ?
+          ORDER BY p.created_at DESC";
 
-$result = $conn->query($query);
+$stmt = $conn->prepare($query);
+$stmt->bind_param('s', $bloguser);
+$stmt->execute();
+$result = $stmt->get_result();
 
+// Handle post deletion
+if (isset($_POST['deletePost'])) {
+    $post_id = $_POST['post_id'];
+    
+    // Ensure only the author of the post can delete it
+    $deleteQuery = "DELETE FROM posts WHERE id = ? AND author = ?";
+    $deleteStmt = $conn->prepare($deleteQuery);
+    $deleteStmt->bind_param('is', $post_id, $bloguser);
 
-if(isset($_POST['Logout'])){
+    if ($deleteStmt->execute()) {
+        echo "<p>Post deleted successfully!</p>";
+        header('Location: ' . $_SERVER['PHP_SELF']); // Refresh the page
+        exit();
+    } else {
+        echo "<p>Error deleting post: " . $conn->error . "</p>";
+    }
+}
+
+// Handle logout
+if (isset($_POST['Logout'])) {
     session_unset();
     session_destroy();
-    header('location: login.php');
+    header('Location: login.php');
     exit();
 }
 ?>
@@ -58,12 +88,18 @@ if(isset($_POST['Logout'])){
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .post {
             margin-bottom: 20px;
             background-color: lightgrey;
             padding: 15px;
             border-bottom: 1px solid #eaeaea;
         }
+        
         .post h2 {
             color: #2980b9;
         }
@@ -93,40 +129,47 @@ if(isset($_POST['Logout'])){
         a {
             text-decoration: none;
         }
-        .user-posts {
+        .add-post {
             display: block;
             text-align: right;
             margin-bottom: 20px;
+        }
+        form.logout {
+            text-align: right;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-    <form action="" method="POST">
-        <input type="submit" value="Logout" name="Logout" class="logout">
-    </form>
+        <form action="" method="POST" class="logout">
+            <input type="submit" value="Logout" name="Logout" class="logout-btn">
+        </form>
+        
         <h1>BlogVerse</h1>
-        <div class="user-posts">
-            <a href="userPosts.php"><button>Your Posts</button></a>
+        <div class="add-post">
+            <a href="addPost.php"><button>Add new Post</button></a>
         </div>
         
         <?php if ($result->num_rows > 0):  ?>
             <?php while($row = $result->fetch_assoc()): ?>
                 <div class="post">
                     <section>
+                        <section class="top-section">
                         <h2><?php echo htmlspecialchars($row['title']); ?></h2>
+                        <form action="" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');" style="display:inline;">
+                            <input type="hidden" name="post_id" value="<?php echo $row['id']; ?>">
+                            <button type="submit" name="deletePost">Delete</button>
+                        </form>
+                        </section>
                         <p><?php echo nl2br(htmlspecialchars($row['content'])); ?></p>
                         <p>By: <span><?php echo htmlspecialchars($row['author']); ?></span></p>
                         <p><?php echo htmlspecialchars($row['created_at']); ?></p>
                     </section>
                     <section class="button-container">
-                        <a href="comments.php?post_id=<?php echo $row['id']?>">
-                            <button><span>(<?php echo $row['comment_count']?>)</span> View Comments</button>
-                        </a>
-                        <a href="addComment.php?post_id=<?php echo $row['id'];?>" >
-                            <button>Add Comment</button>
-                        </a>
+                        <a href="comments.php?post_id=<?php echo $row['id']?>"><button><span>(<?php echo $row['comment_count']?>)</span> View Comments</button></a>
+                        <a href="addComment.php?post_id=<?php echo $row['id'];?>"><button>Add Comment</button></a>
+
                     </section>
                 </div>
             <?php endwhile; ?>
