@@ -112,8 +112,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form action="addComment.php" method="post">
             <input type="hidden" name="post_id" value="<?php echo $_GET['post_id']; ?>">
 
-            <label for="commenter">Your Name:</label>
-            <input type="text" id="commenter" name="commenter" required>
+            <label for="comment_text">Your Comment:</label>
+            <input type="text" id="comment_text" name="comment_text" required>
 
             <input type="submit" value="Post Comment">
         </form>

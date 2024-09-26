@@ -99,6 +99,13 @@ $stmt->bind_param('s', $bloguser);
 $stmt->execute();
 $result = $stmt->get_result();
 
+
+if(isset($_POST['Logout'])){
+    session_unset();
+    session_destroy();
+    header('location: login.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
