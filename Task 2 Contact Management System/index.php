@@ -3,20 +3,23 @@ session_start();
 
 $contacts = isset($_SESSION['contacts']) ? $_SESSION['contacts'] : [];
 
+// Handle saving or updating a contact
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_contact'])) {
     $name = trim($_POST['name']);
     $email = trim($_POST['email']);
     $phone = trim($_POST['phone']);
-    $index = isset($_POST['index']) ? $_POST['index'] : null;
+    $index = isset($_POST['index']) && $_POST['index'] !== '' ? (int)$_POST['index'] : null;
 
     if ($name && $email && $phone) {
-        if ($index !== null) {
+        if ($index !== null && isset($contacts[$index])) {
+            // Update existing contact
             $contacts[$index] = [
                 'name' => htmlspecialchars($name),
                 'email' => htmlspecialchars($email),
                 'phone' => htmlspecialchars($phone)
             ];
         } else {
+            // Add new contact
             $contacts[] = [
                 'name' => htmlspecialchars($name),
                 'email' => htmlspecialchars($email),
@@ -27,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_contact'])) {
     }
 }
 
+// Handle contact removal
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_contact'])) {
     $index = $_POST['index'];
     if (isset($contacts[$index])) {
@@ -35,17 +39,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_contact'])) {
     }
 }
 
+// Handle contact editing
 $editContact = ['name' => '', 'email' => '', 'phone' => ''];
 $editIndex = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_contact'])) {
-    $editIndex = $_POST['index'];
+    $editIndex = (int)$_POST['index'];
     if (isset($contacts[$editIndex])) {
         $editContact = $contacts[$editIndex];
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,18 +68,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_contact'])) {
         }
     </script>
 </head>
+
 <body>
     <div class="container">
         <h1>Contact Manager</h1>
 
+        <!-- Contact Form -->
         <form method="post" onsubmit="return <?php echo $editIndex !== null ? 'confirmUpdate()' : 'true'; ?>;">
             <input type="hidden" name="index" value="<?php echo $editIndex !== null ? $editIndex : ''; ?>">
-            <input type="text" name="name" value="<?php echo $editContact['name']; ?>" placeholder="Name" required>
-            <input type="email" name="email" value="<?php echo $editContact['email']; ?>" placeholder="Email" required>
-            <input type="number" name="phone" value="<?php echo $editContact['phone']; ?>" placeholder="Phone Number" required>
-            <button type="submit" name="save_contact"><?php echo $editIndex !== null ? 'Update' : 'Add'; ?> Contact</button>
+            <input type="text" name="name" value="<?php echo htmlspecialchars($editContact['name']); ?>" placeholder="Name" required>
+            <input type="email" name="email" value="<?php echo htmlspecialchars($editContact['email']); ?>" placeholder="Email" required>
+            <input type="tel" name="phone" value="<?php echo htmlspecialchars($editContact['phone']); ?>" placeholder="Phone Number" required>
+            <button type="submit" name="save_contact" class="submit"><?php echo $editIndex !== null ? 'Update' : 'Add'; ?> Contact</button>
         </form>
 
+        <!-- Contacts Table -->
         <table>
             <tr>
                 <th>Name</th>
@@ -82,9 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_contact'])) {
             </tr>
             <?php foreach ($contacts as $index => $contact): ?>
                 <tr>
-                    <td><?php echo $contact['name']; ?></td>
-                    <td><?php echo $contact['email']; ?></td>
-                    <td><?php echo $contact['phone']; ?></td>
+                    <td><?php echo htmlspecialchars($contact['name']); ?></td>
+                    <td><?php echo htmlspecialchars($contact['email']); ?></td>
+                    <td><?php echo htmlspecialchars($contact['phone']); ?></td>
                     <td class="actions">
                         <form method="post" style="display:inline;">
                             <input type="hidden" name="index" value="<?php echo $index; ?>">
@@ -101,4 +111,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_contact'])) {
         </table>
     </div>
 </body>
+
 </html>
