@@ -230,7 +230,7 @@ if(isset($_POST['Logout'])){
 
         <!-- Add/Edit Post Form -->
         <h2><?php echo $editMode ? "Edit Post" : "Add a New Blog Post"; ?></h2>
-        <form action="" method="post">
+        <form action="" method="post" onsubmit="<?php echo $editMode ? "return confirm('Are you sure you want to save this?');" : "true"; ?>">
             <input type="hidden" name="post_id" value="<?php echo htmlspecialchars($editPostId); ?>">
             <label for="title">Title:</label>
             <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($editPostTitle); ?>" required>
@@ -238,7 +238,7 @@ if(isset($_POST['Logout'])){
             <label for="content">Content:</label>
             <textarea id="content" name="content" rows="5" required><?php echo htmlspecialchars($editPostContent); ?></textarea>
 
-            <input type="submit" value="Submit" name="submitPost">
+            <input type="submit" value="<?php echo $editMode ? "Save" : "Submit"; ?>" name="submitPost">
         </form>
 
         <hr>
