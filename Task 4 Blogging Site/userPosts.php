@@ -55,18 +55,25 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submitPost'])) {
 if (isset($_POST['deletePost'])) {
     $post_id = $_POST['post_id'];
 
-    // Ensure only the author of the post can delete it
-    $deleteQuery = "DELETE FROM posts WHERE id = ? AND author = ?";
-    $deleteStmt = $conn->prepare($deleteQuery);
-    $deleteStmt->bind_param('is', $post_id, $bloguser);
+    // First, delete comments related to the post
+    $deleteCommentsQuery = $conn->prepare("DELETE FROM comments WHERE post_id = ?");
+    $deleteCommentsQuery->bind_param('i', $post_id);
+    $deleteCommentsQuery->execute();
+    $deleteCommentsQuery->close();
 
-    if ($deleteStmt->execute()) {
-        echo "<p>Post deleted successfully!</p>";
+    // Then, delete the post
+    $deletePostQuer = $conn->prepare("DELETE FROM posts WHERE id = ? AND author = ?");
+    $deletePostQuer->bind_param('is', $post_id, $bloguser);
+
+    if ($deletePostQuer->execute()) {
+        echo "<p>Post and its comments deleted successfully!</p>";
         header('Location: ' . $_SERVER['PHP_SELF']); // Refresh the page
         exit();
     } else {
         echo "<p>Error deleting post: " . $conn->error . "</p>";
     }
+
+    $deletePostQuer->close();
 }
 
 // Handle editing post
@@ -256,7 +263,7 @@ if(isset($_POST['Logout'])){
                         <button type="submit" name="editPost">Edit</button>
                     </form>
 
-                    <form action="" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                    <form action="" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this post?\n This will delete all the comments on this post as well.');">
                         <input type="hidden" name="post_id" value="<?php echo $row['id']; ?>">
                         <button type="submit" name="deletePost">Delete</button>
                     </form>
