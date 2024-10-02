@@ -101,9 +101,10 @@ if($_SERVER["REQUEST_METHOD"]== "POST"){
         }
 
         a {
-            text-decoration: none;
+            display: block;
+            text-align: center;
             color: #007bff;
-            display: inline-block;
+            text-decoration: none;
             margin-top: 20px;
         }
 
