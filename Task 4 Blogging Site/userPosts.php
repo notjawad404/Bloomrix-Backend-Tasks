@@ -268,7 +268,6 @@ if(isset($_POST['Logout'])){
 
                     <section class="button-container">
                         <a href="comments.php?post_id=<?php echo $row['id']?>"><button><span>(<?php echo $row['comment_count']?>)</span> View Comments</button></a>
-                        <a href="addComment.php?post_id=<?php echo $row['id'];?>"><button>Add Comment</button></a>
                     </section>
                 </div>
             <?php endwhile; ?>

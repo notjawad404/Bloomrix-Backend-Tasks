@@ -25,6 +25,23 @@ if ($post_result->num_rows > 0) {
 
 $comments_query = "SELECT id, comment_text, commenter, created_at FROM comments WHERE post_id = $post_id ORDER BY created_at DESC";
 $comments_result = $conn->query($comments_query);
+
+// Handle comment submission
+session_start();
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['bloguser'])) {
+    $comment_text = $_POST['comment_text'];
+    $commenter = $_SESSION['bloguser'];
+
+    // Insert comment using prepared statement
+    $stmt = $conn->prepare("INSERT INTO comments (post_id, comment_text, commenter) VALUES (?, ?, ?)");
+    $stmt->bind_param("iss", $post_id, $comment_text, $commenter);
+    $stmt->execute();
+    $stmt->close();
+
+    // Refresh the comments after adding a new one
+    header("Location: " . $_SERVER['PHP_SELF'] . "?post_id=" . $post_id);
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -41,10 +58,6 @@ $comments_result = $conn->query($comments_query);
             margin: 0;
             padding: 20px;
         }
-        h1 {
-            color: #2980b9;
-            text-align: center;
-        }
         .container {
             max-width: 800px;
             margin: auto;
@@ -52,6 +65,10 @@ $comments_result = $conn->query($comments_query);
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #2980b9;
+            text-align: center;
         }
         .post {
             margin-bottom: 20px;
@@ -63,10 +80,29 @@ $comments_result = $conn->query($comments_query);
             font-size: 0.9em;
             color: #777;
         }
-        .add-comment {
-            text-align: right;
-            margin-bottom: 20px;
+        /* Add Comment Form */
+        form {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"],
         button {
             background-color: #2980b9;
             color: white;
@@ -75,10 +111,13 @@ $comments_result = $conn->query($comments_query);
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            width: 20%;
         }
+        input[type="submit"]:hover,
         button:hover {
             background-color: #1a6699;
         }
+        /* Comments Section */
         .comments-section {
             margin-top: 40px;
         }
@@ -86,22 +125,52 @@ $comments_result = $conn->query($comments_query);
             padding: 10px;
             border-bottom: 1px solid #eaeaea;
             margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .comment p {
+            margin: 0;
+        }
+        .post-meta {
+            font-size: 0.85em;
+            color: #777;
+            margin-top: 5px;
+        }
+        /* Back Button */
+        .back-button {
+            background-color: firebrick;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            width: 20%;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: darkred;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <a href="index.php">
+            <button class="back-button">Back</button>
+        </a>
         <h1><?php echo htmlspecialchars($post['title']); ?></h1>
         <div class="post">
             <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
             <p class="post-meta">Posted by <?php echo htmlspecialchars($post['author']); ?> on <?php echo htmlspecialchars($post['created_at']); ?></p>
         </div>
-        
-        <div class="add-comment">
-            <a href="addComment.php?post_id=<?php echo $post_id; ?>">
-                <button>Add Comment</button>
-            </a>
-        </div>
+
+        <h2>Add a Comment</h2>
+        <form action="" method="post">
+            <label for="comment_text">Your Comment:</label>
+            <input type="text" id="comment_text" name="comment_text" required>
+            <input type="submit" value="Post Comment">
+        </form>
 
         <h2>Comments</h2>
         <div class="comments-section">
