@@ -86,7 +86,7 @@ if (isset($_POST['editPost'])) {
     $stmt->bind_param('is', $editPostId, $bloguser);
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     if ($result->num_rows == 1) {
         $post = $result->fetch_assoc();
         $editPostTitle = $post['title'];
@@ -107,7 +107,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 
-if(isset($_POST['Logout'])){
+if (isset($_POST['Logout'])) {
     session_unset();
     session_destroy();
     header('location: login.php');
@@ -130,10 +130,12 @@ if(isset($_POST['Logout'])){
             margin: 0;
             padding: 20px;
         }
+
         h1 {
             text-align: center;
             color: #2c3e50;
         }
+
         .container {
             max-width: 800px;
             margin: auto;
@@ -142,30 +144,43 @@ if(isset($_POST['Logout'])){
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
         .top-section {
             display: flex;
             justify-content: space-between;
         }
+
         .post {
             margin-bottom: 20px;
             background-color: lightgrey;
             padding: 15px;
             border-bottom: 1px solid #eaeaea;
         }
-        .post h2 {
-            color: #2980b9;
-        }
+
         .post p {
             line-height: 1.6;
         }
+
+        .author {
+            color: #2980b9;
+            margin: 5px 0;
+        }
+
+        .date {
+            font-size: 0.8em;
+            color: #777;
+        }
+
         .post section {
             margin-bottom: 10px;
         }
+
         .button-container {
             display: flex;
             flex-direction: row;
             gap: 10px;
         }
+
         button {
             background-color: #2980b9;
             color: white;
@@ -175,33 +190,40 @@ if(isset($_POST['Logout'])){
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
+        .delete-button {
+            background-color: red;
+        }
+
         button:hover {
             background-color: #1a6699;
         }
+
+        .delete-button:hover{
+            background-color: darkred;
+        }
+
         a {
             text-decoration: none;
         }
+
         .add-post {
             display: block;
             margin-bottom: 20px;
         }
+
         .logout {
-            display: flex;
-            justify-content: flex-end;
             margin-bottom: 20px;
         }
-        .logout-btn {
+
+        .back, .logout-btn {
             background-color: red;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-        .logout-btn:hover {
+
+        .back:hover, .logout-btn:hover {
             background-color: darkred;
         }
+
         input[type="text"],
         textarea {
             width: 100%;
@@ -211,6 +233,7 @@ if(isset($_POST['Logout'])){
             border-radius: 4px;
             box-sizing: border-box;
         }
+
         input[type="submit"] {
             display: block;
             margin: auto;
@@ -222,6 +245,7 @@ if(isset($_POST['Logout'])){
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
         input[type="submit"]:hover {
             background-color: #1a6699;
         }
@@ -230,9 +254,14 @@ if(isset($_POST['Logout'])){
 
 <body>
     <div class="container">
-    <form action="" method="POST" class="logout">
+        <section class="top-section">
+            <a href="index.php">
+                <button class="back">Back</button>
+            </a>
+        <form action="" method="POST" class="logout">
             <button type="submit" value="Logout" name="Logout" class="logout-btn">Logout</button>
         </form>
+        </section>
         <h1>BlogVerse</h1>
 
         <!-- Add/Edit Post Form -->
@@ -252,29 +281,29 @@ if(isset($_POST['Logout'])){
 
         <!-- Display User's Posts -->
         <?php if ($result->num_rows > 0):  ?>
-            <?php while($row = $result->fetch_assoc()): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
                 <div class="post">
                     <section class="top-section">
-                    <h2><?php echo htmlspecialchars($row['title']); ?></h2>
+                        <h2><?php echo htmlspecialchars($row['title']); ?></h2>
 
-                    <section>
-                    <form action="" method="POST" style="display:inline;">
-                        <input type="hidden" name="post_id" value="<?php echo $row['id']; ?>">
-                        <button type="submit" name="editPost">Edit</button>
-                    </form>
+                        <section>
+                            <form action="" method="POST" style="display:inline;">
+                                <input type="hidden" name="post_id" value="<?php echo $row['id']; ?>">
+                                <button type="submit" name="editPost">Edit</button>
+                            </form>
 
-                    <form action="" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this post?\n This will delete all the comments on this post as well.');">
-                        <input type="hidden" name="post_id" value="<?php echo $row['id']; ?>">
-                        <button type="submit" name="deletePost">Delete</button>
-                    </form>
-                    </section>
+                            <form action="" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this post?\n This will delete all the comments on this post as well.');">
+                                <input type="hidden" name="post_id" value="<?php echo $row['id']; ?>">
+                                <button type="submit" name="deletePost" class="delete-button">Delete</button>
+                            </form>
+                        </section>
                     </section>
                     <p><?php echo nl2br(htmlspecialchars($row['content'])); ?></p>
-                    <p>By: <span><?php echo htmlspecialchars($row['author']); ?></span></p>
-                    <p><?php echo htmlspecialchars($row['created_at']); ?></p>
+                    <p>By: <span class="author"><?php echo htmlspecialchars($row['author']); ?></span></p>
+                    <p class="date"><?php echo htmlspecialchars($row['created_at']); ?></p>
 
                     <section class="button-container">
-                        <a href="comments.php?post_id=<?php echo $row['id']?>"><button><span>(<?php echo $row['comment_count']?>)</span> View Comments</button></a>
+                        <a href="comments.php?post_id=<?php echo $row['id'] ?>"><button><span>(<?php echo $row['comment_count'] ?>)</span> View Comments</button></a>
                     </section>
                 </div>
             <?php endwhile; ?>

@@ -46,6 +46,26 @@ if(isset($_POST['Logout'])){
             margin: 0;
             padding: 20px;
         }
+
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .logout {
+            background-color: red;
+        }
+
+        .logout:hover {
+            background-color: darkred;
+        }
+
+        .login{
+            background-color: green;
+        }
+        .login:hover{
+            background-color: darkgreen;
+        }
         h1 {
             text-align: center;
             color: #2c3e50;
@@ -103,9 +123,14 @@ if(isset($_POST['Logout'])){
 
 <body>
     <div class="container">
-    <form action="" method="POST">
-        <input type="submit" value="Logout" name="Logout" class="logout">
-    </form>
+    <section class="top-section">
+        <section>
+            <h1><?php echo htmlspecialchars(isset($_SESSION['bloguser'])? $_SESSION['bloguser']: 'Not Login yet'); ?></h1>
+        </section>
+        <form action="" method="POST">
+            <button type="submit" value="Logout" name="Logout" class="<?php echo htmlspecialchars(isset($_SESSION['bloguser'])? "logout": "login"); ?>"><?php echo htmlspecialchars(isset($_SESSION['bloguser'])? "Logout": "Login Now"); ?></button>
+        </form>
+        </section>
         <h1>BlogVerse</h1>
         <div class="user-posts">
             <a href="userPosts.php"><button>Your Posts</button></a>
