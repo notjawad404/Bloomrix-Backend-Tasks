@@ -166,7 +166,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['bloguser'])) {
         </div>
 
         <h2>Add a Comment</h2>
-        <form action="" method="post">
+        <form action="" method="post" onsubmit="checkLogin(event);">
             <label for="comment_text">Your Comment:</label>
             <input type="text" id="comment_text" name="comment_text" required>
             <input type="submit" value="Post Comment">
@@ -186,5 +186,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['bloguser'])) {
             <?php endif; ?>
         </div>
     </div>
+
+    <script>
+        function checkLogin(event) {
+            
+            <?php if (!isset($_SESSION['bloguser'])): ?>
+                alert('You need to log in to comment.');
+                event.preventDefault();
+            <?php endif; ?>
+        }
+    </script>
 </body>
 </html>
