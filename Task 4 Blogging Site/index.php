@@ -14,6 +14,7 @@ if ($conn->connect_error) {
 
 session_start();
 
+// Get all blogs
 $query = "SELECT p.id, p.title, p.content, p.author, p.created_at,
             (SELECT COUNT(*) FROM comments c where c.post_id = p.id) AS comment_count
         FROM posts p

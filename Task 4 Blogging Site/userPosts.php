@@ -20,7 +20,7 @@ if (!isset($_SESSION['bloguser'])) {
     exit();
 }
 
-$bloguser = $_SESSION['bloguser']; // The logged-in user's username
+$bloguser = $_SESSION['bloguser'];
 $editMode = false;
 $editPostId = "";
 $editPostTitle = "";
