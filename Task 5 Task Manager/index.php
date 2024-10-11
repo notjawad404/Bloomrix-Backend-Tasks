@@ -1,16 +1,5 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "taskmanager";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include 'db_connection.php';
 
 session_start();
 
@@ -120,7 +109,7 @@ $result = $stmt->get_result();
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: lightblue;
             margin: 0;
             padding: 0;
         }
@@ -137,8 +126,8 @@ $result = $stmt->get_result();
         }
 
         .logout-btn {
-            background-color: #e74c3c;
-            color: #fff;
+            background-color: red;
+            color: white;
             border: none;
             padding: 10px 20px;
             cursor: pointer;
@@ -147,7 +136,7 @@ $result = $stmt->get_result();
         }
 
         .logout-btn:hover {
-            background-color: #c0392b;
+            background-color: darkred;
         }
 
         form {
@@ -164,16 +153,20 @@ $result = $stmt->get_result();
         input[type="date"],
         textarea,
         select {
-            width: 100%;
+            width: 50%;
             padding: 10px;
             margin-bottom: 15px;
-            border: 1px solid #ddd;
+            border: 1px solid black;
             border-radius: 5px;
         }
 
+        select{
+            width: 25%;
+        }
+
         input[type="submit"] {
-            background-color: #3498db;
-            color: #fff;
+            background-color: green;
+            color: white;
             border: none;
             padding: 10px 20px;
             cursor: pointer;
@@ -181,7 +174,7 @@ $result = $stmt->get_result();
         }
 
         input[type="submit"]:hover {
-            background-color: #2980b9;
+            background-color: darkgreen;
         }
 
         table {
@@ -194,11 +187,12 @@ $result = $stmt->get_result();
         table td {
             padding: 15px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid black;
         }
 
-        table th {
-            background-color: #f2f2f2;
+        .task-completed{
+            text-decoration: line-through;
+            color: lightgray;
         }
 
         .task-actions form {
@@ -206,25 +200,29 @@ $result = $stmt->get_result();
         }
 
         .task-actions button {
-            background-color: #e67e22;
             color: white;
             border: none;
             padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
             margin-left: 10px;
+            width: 60px;
         }
 
-        .task-actions button:hover {
-            background-color: #d35400;
+        .edit-btn {
+            background-color: blue;
+        }
+
+        .edit-btn:hover {
+            background-color: darkblue;
         }
 
         .delete-btn {
-            background-color: #e74c3c;
+            background-color: red;
         }
 
         .delete-btn:hover {
-            background-color: #c0392b;
+            background-color: darkred;
         }
     </style>
 </head>
@@ -254,7 +252,7 @@ $result = $stmt->get_result();
             </select>
 
             <label for="due_date">Due Date:</label>
-            <input type="date" id="due_date" name="due_date" value="<?php echo htmlspecialchars($editTaskDueDate); ?>" required>
+            <input type="date" id="due_date" name="due_date" value="<?php echo htmlspecialchars($editTaskDueDate); ?>" required><br>
 
             <input type="submit" value="<?php echo $editMode ? 'Save' : 'Submit'; ?>" name="submitTask">
         </form>
@@ -285,7 +283,7 @@ $result = $stmt->get_result();
                             <td class="task-actions">
                                 <form method="POST" onsubmit="return confirmEdit()">
                                     <input type="hidden" name="task_id" value="<?php echo $row['id']; ?>">
-                                    <button type="submit" name="editTask">Edit</button>
+                                    <button type="submit" name="editTask" class="edit-btn">Edit</button>
                                 </form>
                                 <form method="POST" onsubmit="return confirmDelete()">
                                     <input type="hidden" name="task_id" value="<?php echo $row['id']; ?>">
