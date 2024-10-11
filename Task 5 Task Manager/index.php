@@ -192,7 +192,7 @@ $result = $stmt->get_result();
 
         .task-completed{
             text-decoration: line-through;
-            color: lightgray;
+            color: gray;
         }
 
         .task-actions form {
@@ -215,6 +215,14 @@ $result = $stmt->get_result();
 
         .edit-btn:hover {
             background-color: darkblue;
+        }
+
+        .disable-edit{
+            opacity: 0.5;
+        }
+
+        .disable-edit:hover{
+            cursor: not-allowed;
         }
 
         .delete-btn {
@@ -274,7 +282,7 @@ $result = $stmt->get_result();
                 </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()): ?>
-                        <tr>
+                        <tr class="<?php echo $row['status'] == 'completed' ? 'task-completed' : ''; ?>">
                             <td><?php echo htmlspecialchars($row['title']); ?></td>
                             <td><?php echo nl2br(htmlspecialchars($row['description'])); ?></td>
                             <td><?php echo htmlspecialchars(ucfirst($row['status'])); ?></td>
@@ -283,7 +291,7 @@ $result = $stmt->get_result();
                             <td class="task-actions">
                                 <form method="POST" onsubmit="return confirmEdit()">
                                     <input type="hidden" name="task_id" value="<?php echo $row['id']; ?>">
-                                    <button type="submit" name="editTask" class="edit-btn">Edit</button>
+                                    <button type="submit" name="editTask" class="edit-btn <?php echo $row['status'] == 'completed' ? 'disable-edit' : ''; ?>" <?php echo $row['status'] == 'completed' ? 'disabled' : ''; ?>>Edit</button>
                                 </form>
                                 <form method="POST" onsubmit="return confirmDelete()">
                                     <input type="hidden" name="task_id" value="<?php echo $row['id']; ?>">
