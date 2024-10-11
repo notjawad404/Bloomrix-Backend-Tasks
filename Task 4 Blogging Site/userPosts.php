@@ -39,12 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submitPost'])) {
         $stmt->bind_param("ssis", $title, $content, $post_id, $author);
         $stmt->execute();
         $stmt->close();
+
     } else {
         // Adding a new post
         $stmt = $conn->prepare("INSERT INTO posts (title, content, author) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $title, $content, $author);
         $stmt->execute();
         $stmt->close();
+
     }
 
     header('Location: ' . $_SERVER['PHP_SELF']);
@@ -62,10 +64,10 @@ if (isset($_POST['deletePost'])) {
     $deleteCommentsQuery->close();
 
     // Then, delete the post
-    $deletePostQuer = $conn->prepare("DELETE FROM posts WHERE id = ? AND author = ?");
-    $deletePostQuer->bind_param('is', $post_id, $bloguser);
+    $deletePostQuery = $conn->prepare("DELETE FROM posts WHERE id = ? AND author = ?");
+    $deletePostQuery->bind_param('is', $post_id, $bloguser);
 
-    if ($deletePostQuer->execute()) {
+    if ($deletePostQuery->execute()) {
         echo "<p>Post and its comments deleted successfully!</p>";
         header('Location: ' . $_SERVER['PHP_SELF']); // Refresh the page
         exit();
@@ -73,7 +75,7 @@ if (isset($_POST['deletePost'])) {
         echo "<p>Error deleting post: " . $conn->error . "</p>";
     }
 
-    $deletePostQuer->close();
+    $deletePostQuery->close();
 }
 
 // Handle editing post
@@ -92,6 +94,9 @@ if (isset($_POST['editPost'])) {
         $editPostTitle = $post['title'];
         $editPostContent = $post['content'];
     }
+    $stmt->close();
+
+
 }
 
 // Fetch posts only from the logged-in user
@@ -107,12 +112,17 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 
+
 if (isset($_POST['Logout'])) {
     session_unset();
     session_destroy();
     header('location: login.php');
     exit();
 }
+
+$stmt->close();
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>

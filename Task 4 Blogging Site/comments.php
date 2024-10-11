@@ -22,6 +22,7 @@ if ($post_result->num_rows > 0) {
     echo "Post not found!";
     exit;
 }
+$post_result->close();
 
 $comments_query = "SELECT id, comment_text, commenter, created_at FROM comments WHERE post_id = $post_id ORDER BY created_at DESC";
 $comments_result = $conn->query($comments_query);
@@ -42,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['bloguser'])) {
     header("Location: " . $_SERVER['PHP_SELF'] . "?post_id=" . $post_id);
     exit;
 }
+$conn->close();
 ?>
 
 <!DOCTYPE html>

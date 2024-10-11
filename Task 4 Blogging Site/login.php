@@ -31,8 +31,11 @@ if($_SERVER["REQUEST_METHOD"]== "POST"){
    else{
       $error_message = "Invalid username or password";
    }
-}
 
+   $login_user->close();
+ 
+}
+$conn->close();
 ?>
 
 <!DOCTYPE html>
