@@ -23,7 +23,7 @@ $query = "SELECT p.id, p.title, p.content, p.author, p.created_at,
 
 $result = $conn->query($query);
 
-$result->close();
+
 
 if(isset($_POST['Logout'])){
     session_unset();
@@ -31,7 +31,6 @@ if(isset($_POST['Logout'])){
     header('location: login.php');
     exit();
 }
-
 $conn->close();
 ?>
 
