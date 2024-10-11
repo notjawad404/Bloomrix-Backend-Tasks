@@ -1,17 +1,7 @@
 <?php
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "user";
-
-$error_message = '';
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include 'db_connection.php';
+$error_message = "";
 
 if($_SERVER["REQUEST_METHOD"]== "POST"){
    $username = $_POST['username'];
