@@ -276,7 +276,6 @@ $result = $stmt->get_result();
                         <th>Description</th>
                         <th>Status</th>
                         <th>Due Date</th>
-                        <th>Created At</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -287,7 +286,6 @@ $result = $stmt->get_result();
                             <td><?php echo nl2br(htmlspecialchars($row['description'])); ?></td>
                             <td><?php echo htmlspecialchars(ucfirst($row['status'])); ?></td>
                             <td><?php echo htmlspecialchars($row['due_date']); ?></td>
-                            <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                             <td class="task-actions">
                                 <form method="POST" onsubmit="return confirmEdit()">
                                     <input type="hidden" name="task_id" value="<?php echo $row['id']; ?>">
@@ -316,7 +314,7 @@ $result = $stmt->get_result();
                 </tbody>
             </table>
         <?php else: ?>
-            <p>No tasks found. Add your first task above!</p>
+            <p>No tasks found.</p>
         <?php endif; ?>
     </div>
 </body>
